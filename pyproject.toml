@@ -1,0 +1,35 @@
+[project]
+name = "gbg-founder-copilot"
+version = "0.1.0"
+description = "Founder Copilot for AI Gothenburg — LangChain, LangGraph, Deep Agents and LangSmith, one piece each."
+requires-python = ">=3.12"
+dependencies = [
+    "deepagents>=0.7.20",
+    "langchain>=1.4.3",
+    "langchain-anthropic>=1.7.5",
+    "langgraph>=1.2.12",
+    "langgraph-checkpoint-sqlite>=3.1.1",
+    "langsmith>=0.14.1",
+    "pydantic>=2.13.5",
+    "python-dotenv>=1.2.3",
+]
+
+[project.scripts]
+copilot = "copilot.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "copilot"
+
+[dependency-groups]
+dev = [
+    "langgraph-cli[inmem]>=0.4.32",
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["evals"]
+addopts = "-q"

@@ -1,0 +1,1 @@
+"""AI Gothenburg Ops Copilot."""
