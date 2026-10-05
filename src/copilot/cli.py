@@ -4,6 +4,7 @@
     uv run copilot triage --sample 2        # triage sample 2
     uv run copilot triage --to press@aigothenburg.com --from a@b.se \\
         --subject "Intervju" --body "Hej! ..."   # your own email
+    uv run copilot demo prepare             # reset + seed the server before a rehearsal
 
 Traces go to LangSmith when LANGSMITH_TRACING=true in .env.
 """
@@ -86,6 +87,19 @@ def _run_triage(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_demo(args: argparse.Namespace) -> int:
+    from langgraph_sdk import get_sync_client
+
+    client = get_sync_client(url=args.url)
+    steps = {"reset": ["demo_reset"], "seed": ["demo_seed"], "prepare": ["demo_reset", "demo_seed"]}[args.action]
+    for graph in steps:
+        result = client.runs.wait(None, graph, input={})  # a stateless run on the server
+        print(f"{graph:<11} done ({abs(result.get('recorded', 0))} item(s))")
+    if args.action != "reset":
+        print("Seeded: Elin Sund (Revisit, 'Too early'), Omar Nilsson (Member), Linnea Ek (Applicant)")
+    return 0
+
+
 def main() -> int:
     load_dotenv(".env")
     parser = argparse.ArgumentParser(prog="copilot", description="AI Gothenburg Ops Copilot")
@@ -100,6 +114,11 @@ def main() -> int:
     t.add_argument("--body", help="email text; when given, it is used instead of a sample")
     t.add_argument("--profile", choices=["dev", "release"], help="dev = free Ling (default), release = Claude")
     t.set_defaults(handler=_run_triage)
+
+    d = commands.add_parser("demo", help="prepare the LangGraph server for a pitch rehearsal")
+    d.add_argument("action", choices=["prepare", "reset", "seed"], help="prepare = reset, then seed")
+    d.add_argument("--url", default="http://localhost:2024", help="where `langgraph dev` runs")
+    d.set_defaults(handler=_run_demo)
 
     args = parser.parse_args()
     return args.handler(args)

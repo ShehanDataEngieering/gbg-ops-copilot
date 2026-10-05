@@ -1,7 +1,11 @@
 {
-  "dependencies": ["."],
+  "dependencies": [
+    "."
+  ],
   "graphs": {
-    "email": "./src/copilot/graph.py:graph"
+    "email": "./src/copilot/graph.py:graph",
+    "demo_seed": "./src/copilot/demo.py:seed_graph",
+    "demo_reset": "./src/copilot/demo.py:reset_graph"
   },
   "env": ".env"
 }
