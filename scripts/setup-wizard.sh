@@ -198,17 +198,27 @@ check_http() {
 
 banner "AI Gothenburg Ops Copilot · accounts and keys"
 
-# ── 1. Anthropic ──────────────────────────────────────────────────────────
-stage "Anthropic (Claude models)"
-say "The Copilot uses Claude Sonnet 5.5 for Briefs and chat, Haiku 4.5 for triage."
-open_url "https://platform.claude.com/settings/keys"
-step "Sign in, then click 'Create Key'. Name it: gbg-ops-copilot"
-step "Copy the key (starts with sk-ant-). It is shown only once."
-ask_secret ANTHROPIC_API_KEY "Paste the Anthropic API key:"
-write_env ANTHROPIC_API_KEY "$ANTHROPIC_API_KEY"
-check_http "Anthropic key" "$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 \
-  https://api.anthropic.com/v1/models \
-  -H "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" || true)"
+# ── 1. Command Code (all models) ──────────────────────────────────────────
+stage "Command Code (all models)"
+say "One Command Code key covers every model the Copilot uses:"
+say "  Ling 3.0 Flash Sante (free) for development, Claude for the release gate"
+say "  and the demo, GPT-6 Sol as the eval judge."
+note "Needs a plan with API access (every plan except Go)."
+open_url "https://commandcode.ai/settings/keys"
+step "Sign in, then create an API key. Name it: gbg-ops-copilot"
+step "Copy the key. The same key works for the Command Code CLI and the API."
+ask_secret COMMANDCODE_API_KEY "Paste the Command Code API key:"
+write_env COMMANDCODE_API_KEY "$COMMANDCODE_API_KEY"
+# Free check: an empty request returns 400 (key accepted) or 401 (key rejected).
+code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 -X POST \
+  "https://api.commandcode.ai/provider/v1/chat/completions" \
+  -H "Authorization: Bearer $COMMANDCODE_API_KEY" \
+  -H "content-type: application/json" -d '{}' || true)
+case "$code" in
+  400|422) printf '  %s✓ Command Code key works%s\n' "$GREEN" "$RESET" ;;
+  401|403) warn "Command Code rejected the key (HTTP $code). Check the key and that your plan includes API access." ;;
+  *) warn "Command Code check returned HTTP $code. Re-run the wizard to retry." ;;
+esac
 pause
 
 # ── 2. LangSmith ──────────────────────────────────────────────────────────
@@ -295,7 +305,7 @@ elif confirm "Create a PRIVATE GitHub repo 'gbg-ops-copilot' and add it as origi
   fi
 fi
 if git remote get-url origin >/dev/null 2>&1; then
-  set_secret ANTHROPIC_API_KEY "$ANTHROPIC_API_KEY"
+  set_secret COMMANDCODE_API_KEY "$COMMANDCODE_API_KEY"
   set_secret LANGSMITH_API_KEY "$LANGSMITH_API_KEY"
   set_secret PINECONE_API_KEY "$PINECONE_API_KEY"
   set_secret TAVILY_API_KEY "$TAVILY_API_KEY"
