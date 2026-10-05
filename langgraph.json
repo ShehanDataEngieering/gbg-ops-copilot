@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "email": "./src/copilot/graph.py:graph"
+  },
+  "env": ".env"
+}
