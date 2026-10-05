@@ -134,3 +134,13 @@ def test_a_declined_application_leaves_no_role():
     people.record(decision("Decline", "Too early"))
 
     assert people.recall("elin@fjordsight.example").roles == set()
+
+
+def test_the_same_application_recorded_twice_stays_one_and_keeps_its_decision():
+    people = People(store=InMemoryStore())
+    people.record(march_application())
+    people.record(decision("Revisit", "Too early"))
+    people.record(march_application())
+
+    applications = people.recall("elin@fjordsight.example").applications
+    assert [(a.application_id, a.decision.choice) for a in applications] == [("app-2026-0312-elin", "Revisit")]

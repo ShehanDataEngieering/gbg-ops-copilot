@@ -130,6 +130,8 @@ class People:
         person = item.value if item else {"name": None, "applications": [], "emails": []}
         if isinstance(event, ApplicationReceived):
             person["name"] = event.name
+            if any(a["application_id"] == event.application_id for a in person["applications"]):
+                return  # the same form submission again: keep the one we have, and its Decision
             person["applications"].append(
                 {
                     "application_id": event.application_id,
@@ -165,6 +167,15 @@ class People:
                 }
             )
         self._store.put(_PERSONS, _key(event.address), person)
+
+    def forget_everyone(self) -> int:
+        """Delete every Person. For resetting the demo between rehearsals; returns how many."""
+        forgotten = 0
+        while batch := self._store.search(_PERSONS, limit=100):
+            for item in batch:
+                self._store.delete(_PERSONS, item.key)
+            forgotten += len(batch)
+        return forgotten
 
     def recall(self, address: str) -> History:
         item = self._store.get(_PERSONS, _key(address))
