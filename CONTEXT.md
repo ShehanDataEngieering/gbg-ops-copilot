@@ -15,8 +15,8 @@ One human the hub deals with, identified by email address. A Person holds Roles 
 _Avoid_: contact, user, lead, founder (as an identity)
 
 **Role**:
-What a Person is to the hub at a given time: Applicant, Member, Supporter, Partner, Investor, Press. A Person can hold several at once and change them over time.
-_Avoid_: type, status
+What a Person is to the hub at a given time: Applicant, Member, Supporter, Partner, Investor, Press. A Person can hold several at once and change them over time. Applicant and Member follow from Applications and their Decisions; every other Role is only suggested by the assistant and becomes real when a Hub Operator confirms it. An email's Category never sets a Role.
+_Avoid_: type, status, label
 
 **Applicant**:
 A Person with at least one Application still awaiting a Decision.
@@ -67,6 +67,10 @@ _Avoid_: interrupt, approval, task
 **Category**:
 A named topic an incoming email is sorted into (e.g. Podcast, Partnership, Press). Hub Operators own the list and can change it; each Category has a description and examples.
 _Avoid_: label, tag, folder, type
+
+**Unsorted**:
+The state of an email the assistant could not place in any Category after one retry. It waits in the Daily Report for a Hub Operator's Correction; it is never treated as Noise.
+_Avoid_: unknown, other, misc, uncategorized
 
 **Correction**:
 A Hub Operator's fix of the Category the assistant chose for an email. Every Correction becomes a test case the next version of the sorting must pass.

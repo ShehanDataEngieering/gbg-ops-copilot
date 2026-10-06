@@ -1,0 +1,68 @@
+# The editable list of Categories. Hub Operators own it: add, rename or reword
+# freely. Descriptions and examples go into the triage prompt as written.
+# (Local copy; the versioned source of truth moves to LangSmith Prompt Hub.)
+# brief = true: emails in this Category get an automatic Brief.
+
+[[category]]
+name = "Application"
+brief = true
+description = "A founder's application to the hub, or a follow-up about one."
+example = "Any news on my application? We now have two paying customers."
+
+[[category]]
+name = "Event signup"
+description = "Someone wants a place at an existing event: Investor Night, Wednesday Afterwork, Builders Community."
+example = "Can I join Wednesday Afterwork next week?"
+
+[[category]]
+name = "Event proposal"
+description = "Someone wants to host, speak at, sponsor or co-organise an event."
+example = "We'd love to run a workshop on MLOps at the hub."
+
+[[category]]
+name = "Podcast"
+description = "Guest pitches and messages about The AI Gothenburg Podcast."
+example = "I'd love to come on the podcast and talk about voice agents."
+
+[[category]]
+name = "Partnership"
+brief = true
+description = "Organisations offering money, compute, expertise or programmes: Angel Network, Institutional, Foundational, Strategic, Public and academic partners."
+example = "Our bank is interested in becoming an Institutional Partner."
+
+[[category]]
+name = "Investor"
+brief = true
+description = "VCs and angels asking about deal flow, co-investment or intros to member companies."
+example = "Could you intro us to Fjordsight? They fit our thesis."
+
+[[category]]
+name = "Press"
+brief = true
+description = "Journalists and media: interviews, articles, press kit requests. The hub promises a reply within two working days."
+example = "I'm writing about Gothenburg's AI scene for GP, could we talk Friday?"
+
+[[category]]
+name = "Member & hub"
+description = "Hub Members about the space: rooms, membership terms, feedback on the hub."
+example = "Can we book the big room for a customer demo on Tuesday?"
+
+[[category]]
+name = "Supporter"
+description = "Supporters offering help, referrals, or nominating a founder."
+example = "I'd like to nominate a founder I mentor for the hub."
+
+[[category]]
+name = "Merch"
+description = "Orders and questions about AI Gothenburg merch."
+example = "Do you ship the hoodies to Malmö?"
+
+[[category]]
+name = "Admin"
+description = "Invoices, legal, contracts, office matters."
+example = "Attached is the invoice for September's cleaning."
+
+[[category]]
+name = "Noise"
+description = "Newsletters, cold sales pitches, automatic replies and anything that needs no one's attention."
+example = "Boost your SEO 300% with our AI tool!"
