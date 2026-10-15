@@ -1,0 +1,5 @@
+# no-mistakes gate config. commands and agent are read only from main.
+agent: claude
+commands:
+  test: "uv run pytest"
+no_ci: true # remove once GitHub Actions runs the offline checks
