@@ -10,6 +10,47 @@ Built on LangChain, LangGraph, Deep Agents and LangSmith. Vocabulary (Person, Ap
 |---|---|
 | Triage, Person memory, the email graph (triage → recall → record), demo seed/reset, live Inbox screen, CLI | Decision Requests (interrupt/resume), Briefs (Deep Agent), Operator Copilot chat, Daily Report, Postgres + Pinecone, CI |
 
+## Documentation
+
+Read these before changing code. Coding agents read them too (see [`docs/agents/domain.md`](docs/agents/domain.md)).
+
+| File | What it is |
+|---|---|
+| [`CONTEXT.md`](CONTEXT.md) | Domain glossary: Person, Role, Application, Decision, Decision Request, Category, Ask, Brief, Conversation… and the words to avoid |
+| [`docs/design.md`](docs/design.md) | v1 design: scope, harness shape, modules, models, storage, triggers, learning loop, evals and release gate, frontend, build order, CI/CD, open questions for the pilot |
+| [`docs/as-built.pdf`](docs/as-built.pdf) | Snapshot of what was built so far |
+
+### Architecture Decision Records — [`docs/adr/`](docs/adr/)
+
+Each ADR records one decision that has trade-offs. Don't undo one without writing a new ADR.
+
+| ADR | Decision |
+|---|---|
+| [0001](docs/adr/0001-decision-requests-are-surface-agnostic.md) | Decision Requests are surface-agnostic: the graph pauses with a neutral payload; the frontend or Slack is just an adapter |
+| [0002](docs/adr/0002-feed-hub-admin-never-replace-it.md) | Feed Hub Admin, never replace it |
+| [0003](docs/adr/0003-briefs-show-evidence-never-scores.md) | Briefs show evidence per Criterion, never a score or recommendation |
+| [0004](docs/adr/0004-postgres-for-records-pinecone-for-similarity.md) | Postgres for records (source of truth), Pinecone only for similarity |
+| [0005](docs/adr/0005-graph-core-agents-for-open-ended-work.md) | A fixed graph runs every email; only the Brief researcher is a Deep Agent, and the Operator Copilot is a plain `create_agent` |
+| [0006](docs/adr/0006-pitch-frontend-live-on-laptop.md) | The first frontend is a live pitch demo (Next.js + `useStream`) on the presenter's laptop, with no login and no public URL |
+
+### Research — [`docs/research/`](docs/research/)
+
+| File | Question |
+|---|---|
+| [`deep-agents-vs-own-harness.md`](docs/research/deep-agents-vs-own-harness.md) ([PDF](docs/research/deep-agents-vs-own-harness.pdf)) | Deep Agents or our own harness for the Brief researcher and the Operator Copilot? Result: keep Deep Agents for Briefs, configured explicitly and pinned. Use `create_agent` for the Copilot. Don't use `interrupt_on` / Agent Inbox. Plan for about 4–6 Briefs a day on Ling's free tier. This led to the ADR 0005 amendment. |
+
+### Agent setup — [`docs/agents/`](docs/agents/)
+
+How the coding-agent skills (see [How we build](#how-we-build-coding-skills)) work with this repo:
+
+| File | What it sets |
+|---|---|
+| [`domain.md`](docs/agents/domain.md) | Read `CONTEXT.md` and the relevant ADRs before exploring, use the glossary's words, and flag any conflict with an ADR |
+| [`issue-tracker.md`](docs/agents/issue-tracker.md) | Specs and tickets live in GitHub Issues, managed with the `gh` CLI |
+| [`triage-labels.md`](docs/agents/triage-labels.md) | Maps the skills' triage roles to our labels (`needs-info` → `question`, `ready-for-human` → `help wanted`) |
+
+`AGENTS.md` is the agent entry point; `CLAUDE.md` only imports it.
+
 ## Architecture
 
 ```
@@ -98,9 +139,13 @@ src/copilot/        Python package: triage, people, graph, demo, models, cli
 evals/deterministic Offline tests (pytest): no network, fake models
 web/                Next.js pitch frontend (Inbox screen, useStream)
 docs/design.md      v1 design — what is planned and why
-docs/adr/           Architecture Decision Records
+docs/as-built.pdf   Snapshot of what is built
+docs/adr/           Architecture Decision Records (0001–0006)
+docs/research/      Research write-ups that fed the ADRs
 docs/agents/        How the coding-agent skills use this repo
 CONTEXT.md          Domain glossary
+AGENTS.md           Agent instructions (CLAUDE.md imports it)
+.no-mistakes.yaml   no-mistakes gate config
 langgraph.json      Graphs the server serves: email, demo_seed, demo_reset
 scripts/setup-wizard.sh  Walks you through API keys and GitHub secrets
 ```
